@@ -1,0 +1,33 @@
+import collections
+
+class Solution:
+    def findCheapestPrice(self, n, flights, src, dst, K):
+        """
+        :type n: int
+        :type flights: List[List[int]]
+        :type src: int
+        :type dst: int
+        :type K: int
+        :rtype: int
+
+        BFS
+
+        """           
+        graph = collections.defaultdict(list)
+        for parent, child, value in flights:
+            graph[parent].append((child, value))
+
+        q = [(src, 0)]
+        stops = 0
+        result = float('inf')
+        while q:
+            newQ = []
+            for node, currCost in q:
+                if node == dst and stops <= K+1:
+                    result = min(result, currCost)
+                elif stops <= K+1 and currCost < result:
+                    for child, newCost in graph[node]:
+                        newQ.append((child, currCost + newCost))
+            q = newQ
+            stops += 1
+        return -1 if result == float('inf') else result
